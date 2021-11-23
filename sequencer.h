@@ -6,7 +6,7 @@
 using namespace std;
 class sequencer{
     public:
-        sequencer(string a1, string a2, float a, float b, float c);
+        sequencer(string a1, string a2, float mm, float cc, float dd);
         float findCost(int i, int j, float tc);
     private:
         int dimension;
