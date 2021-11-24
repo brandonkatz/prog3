@@ -8,6 +8,7 @@ class sequencer{
     public:
         sequencer(string a1, string a2, float mm, float cc, float dd);
         float findCost(int i, int j, float tc);
+        float sendResult(int i, int j);
     private:
         int dimension;
         //pair<int,bool> costs[dimension][dimension];      fine, use vector of vectors instead
