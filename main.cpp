@@ -12,12 +12,12 @@ void reverseStr(string& str){
     for (int i = 0; i < n / 2; i++)
         swap(str[i], str[n - i - 1]);
 }
-int main(){
+int main(int argc, char* argv[]){
     //this fills every index of the dp vector
     //sequencer only fills at matched node index?
     float m=2;//points added for a match
-    float c=-.2;//points for a change/replacement (negative value)
-    float d=-1.5;//points for deletion/skipping a base (negative value)
+    float c=-.5;//points for a change/replacement (negative value)
+    float d=-1;//points for deletion/skipping a base (negative value)
     string s1="ACATGAGACAGACAGACCCCCAGAGACAGACCCCTAGACACAGAGAGAGTATGCAGGACAGGGTTTTTGCCCAGGGTGGCAGTATG";
     string s2="AGGATTGAGGTATGGGTATGTTCCCGATTGAGTAGCCAGTATGAGCCAGAGTTTTTTACAAGTATTTTTCCCAGTAGCCAGAGAGAGAGTCACCCAGTACAGAGAGC";
     int l1=s1.length();
@@ -52,7 +52,7 @@ int main(){
         } 
     }
 
-    cout << "answer: "<<dp[s1.length()][s2.length()]<<endl;
+    cout <<dp[s1.length()][s2.length()]<<endl;
     ///print out to analyze the rows of the dp table, maybe max in each indicates the action we do at that index?
     //to find the order of actions, just trace through diagonally
     /*for(int i=0;i<=l1;++i){
@@ -78,7 +78,6 @@ int main(){
         //"PREVIOUS MATCH MIGHT BE OPTIMAL VALUE, BUT IS IT A REAL NODE?"
             if((dp[i-1][j-1]+m == dp[i][j])&&s1[i-1]==s2[j-1]){//got to this node by making previous match
                 //dont need to change the strings, just increment
-                cout<<"matching                   "<<i<<","<<j<<endl;
                 s1out+=s1[i-1];
                 s2out+=s2[j-1];
                 i--;
