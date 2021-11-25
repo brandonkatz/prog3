@@ -2,7 +2,6 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
-#include "sequencer.h"
 #include <string.h>
 #include <fstream>
 #include <sstream>
@@ -35,36 +34,27 @@ int main(int argc, char* argv[]){
         //cout<<i<<","<<argv[i]<<endl;
         if(!strcmp(argv[i], "-d")){
             D=argv[i+1];
+            ++i;
         }
-        if(!strcmp(argv[i], "-c"))
+        else if(!strcmp(argv[i], "-c")){
             C=argv[i+1];
-        if(!strcmp(argv[i], "-m"))
+            ++i;
+        }
+        else if(!strcmp(argv[i], "-m")){
             M=argv[i+1];
-        if(!strcmp(argv[i], "-1"))
+            ++i;
+        }
+        else if(!strcmp(argv[i], "-1")){
             file1=argv[i+1];
-        if(!strcmp(argv[i], "-2"))
+            ++i;
+        }
+        else if(!strcmp(argv[i], "-2")){
             file2=argv[i+1];
-        /*if(strcmp(argv[i], "-m")){
-            //cout<<"found"<<endl;
-            //cout<<"i= "<<i<<"argv[i]="<<argv[i]<<endl;
-            M=argv[i];
-            if(i<argc-1){
-                cout<<"inside m setter: "<<argv[i+1]<<endl;
-                M=argv[i+1];
-                //m=stof(argv[i+1]);
-            }
-            
+            ++i;
         }
-        if(strcmp(argv[i], "-d")){
-            D=argv[i];
-        }
-        if(strcmp(argv[i], "-c"))
-            C=argv[i];
-        if(strcmp(argv[i], "-1"))
-            file1=argv[i];
-        if(strcmp(argv[i], "-2"))
-            file2=argv[i];*/
+       
     }
+    //cout<<"file1: "<<file1<<endl;
     //cout<<"M= "<<M<<endl;
     //cout<<"D= "<<D<<endl;
     //cout<<"C= "<<C<<endl;
@@ -92,6 +82,8 @@ int main(int argc, char* argv[]){
     //cout<<s2<<endl;
     int l1=s1.length();//important that this is here and not above
     int l2=s2.length();
+    //cout<<"s1: "<<s1<<endl;
+    //cout<<"s2: "<<s2<<endl;
     vector<vector<float>> dp(l1+1, vector<float>(l2+1,0));
     for(int i=0;i<=l1;++i){//initializing values
         for(int j=0;j<=l2;++j){//what if l2==0??????? THESE BOUNDS MIGHT CAUSE PROBLEMS LATER
@@ -114,7 +106,9 @@ int main(int argc, char* argv[]){
             }
         } 
     }
-
+    //cout<<"m= "<<m<<endl;
+    //cout<<"d= "<<d<<endl;
+    //cout<<"c= "<<c<<endl;
     cout <<dp[s1.length()][s2.length()]<<endl;
     ///print out to analyze the rows of the dp table, maybe max in each indicates the action we do at that index?
     //to find the order of actions, just trace through diagonally

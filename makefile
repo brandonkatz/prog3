@@ -1,14 +1,11 @@
-prog3: main.o sequencer.o 
-	g++ main.o sequencer.o  -o prog3
+prog3: main.o
+	g++ main.o -o prog3
 
-main.o: main.cpp sequencer.h 
+main.o: main.cpp  
 	g++ -g -c main.cpp
 
-sequencer.o: sequencer.cpp sequencer.h
-	g++ -g -c sequencer.cpp 
-
 clean:
-	rm prog3 main.o sequencer.o
+	rm prog3 main.o 
 
 all:
-	make prog3 main.o sequencer.o 
+	make prog3 main.o 
