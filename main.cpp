@@ -3,7 +3,10 @@
 #include <algorithm>
 #include <utility>
 #include "sequencer.h"
-#include <string>
+#include <string.h>
+#include <fstream>
+#include <sstream>
+#include <streambuf>
 using namespace std;
 void reverseStr(string& str){
     int n = str.length();
@@ -13,16 +16,82 @@ void reverseStr(string& str){
         swap(str[i], str[n - i - 1]);
 }
 int main(int argc, char* argv[]){
+
     //this fills every index of the dp vector
     //sequencer only fills at matched node index?
+    ///VALUES BELOW ARE DEFINED AS DEFAULT, DO NOT CHANGE
     float m=2;//points added for a match
-    float c=-.5;//points for a change/replacement (negative value)
-    float d=-1;//points for deletion/skipping a base (negative value)
-    string s1="ACATGAGACAGACAGACCCCCAGAGACAGACCCCTAGACACAGAGAGAGTATGCAGGACAGGGTTTTTGCCCAGGGTGGCAGTATG";
-    string s2="AGGATTGAGGTATGGGTATGTTCCCGATTGAGTAGCCAGTATGAGCCAGAGTTTTTTACAAGTATTTTTCCCAGTAGCCAGAGAGAGAGTCACCCAGTACAGAGAGC";
-    int l1=s1.length();
-    int l2=s2.length();
+    float c=-0.5;//points for a change/replacement (negative value)
+    float d=-1.0;//points for deletion/skipping a base (negative value)
+    string M="none";
+    string C="none";
+    string D="none";
+    string s1="";
+    string s2="";
+    string file1="";
+    string file2="";
+    //cout<<"argc = "<<argc<<endl;
+    for(int i=1; i<argc-1; i++){
+        //cout<<i<<","<<argv[i]<<endl;
+        if(!strcmp(argv[i], "-d")){
+            D=argv[i+1];
+        }
+        if(!strcmp(argv[i], "-c"))
+            C=argv[i+1];
+        if(!strcmp(argv[i], "-m"))
+            M=argv[i+1];
+        if(!strcmp(argv[i], "-1"))
+            file1=argv[i+1];
+        if(!strcmp(argv[i], "-2"))
+            file2=argv[i+1];
+        /*if(strcmp(argv[i], "-m")){
+            //cout<<"found"<<endl;
+            //cout<<"i= "<<i<<"argv[i]="<<argv[i]<<endl;
+            M=argv[i];
+            if(i<argc-1){
+                cout<<"inside m setter: "<<argv[i+1]<<endl;
+                M=argv[i+1];
+                //m=stof(argv[i+1]);
+            }
+            
+        }
+        if(strcmp(argv[i], "-d")){
+            D=argv[i];
+        }
+        if(strcmp(argv[i], "-c"))
+            C=argv[i];
+        if(strcmp(argv[i], "-1"))
+            file1=argv[i];
+        if(strcmp(argv[i], "-2"))
+            file2=argv[i];*/
+    }
+    //cout<<"M= "<<M<<endl;
+    //cout<<"D= "<<D<<endl;
+    //cout<<"C= "<<C<<endl;
+    //cout<<file2<<endl;
+    if(M!="none")
+        m=stof(M);//need ifstatments for override?
+    if(D!="none")
+        d=stof(D);
+    if(C!="none")
+        c=stof(C);
     
+    //cout<<"m= "<<m<<endl;
+    //cout<<"d= "<<d<<endl;
+    //cout<<"c= "<<c<<endl;
+    //pull file contents from string names
+    ifstream t(file1);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    s1=buffer.str();
+    ifstream t1(file2);
+    std::stringstream buffer1;
+    buffer1 << t1.rdbuf();
+    s2=buffer1.str();
+    //cout<<s1<<endl;
+    //cout<<s2<<endl;
+    int l1=s1.length();//important that this is here and not above
+    int l2=s2.length();
     vector<vector<float>> dp(l1+1, vector<float>(l2+1,0));
     for(int i=0;i<=l1;++i){//initializing values
         for(int j=0;j<=l2;++j){//what if l2==0??????? THESE BOUNDS MIGHT CAUSE PROBLEMS LATER
@@ -35,13 +104,7 @@ int main(int argc, char* argv[]){
                 dp[i][j] = d*j;
         }
     } 
-    /*for(int i=0;i<=l1;++i){//print the initialize table
-        for(int j=0;j<=l2;++j) {
-            cout<<dp[i][j]<<" ";
-        }
-        cout<<endl;
-    }*/
-
+   
     for(int i=1;i<=l1;++i){
         for(int j=1;j<=l2;++j) {
             if(s1[i-1] == s2[j-1]) {
@@ -117,70 +180,11 @@ int main(int argc, char* argv[]){
         }
     }
 
-    //need to reverse the strings after this?
-    /*while(i>0||j>0){
-        if(s1[i-1]==s2[j-1]){//there is a match at this node? jump back
-            //no need to modify the string?
-            i--;
-            j--;
-        }
-        else if(i>0){//i is
-            int j=0;
-        }
-    }*/
-    /*while(i<l1 || j<l2){//ending early,, TRY OR INSTEAD OF AND
-        //cout<<"i: "<<i<<", j: "<<j<<endl;
-        int matchorReplace;
-        int skipj;
-        int skipi;
-        int maxOf;
-        if(j>=l2){//j not skippable
-            skipi= dp[i+1][j];
-            maxOf=skipi;
-        }
-        else if(i>=l1){//i not skippable
-            skipj= dp[i][j+1];
-            maxOf=skipj;
-        }
-        else{
-            //consider all cases
-            matchorReplace= dp[i+1][j+1];
-            skipi= dp[i+1][j];
-            skipj= dp[i][j+1];
-            maxOf= max({matchorReplace,skipj,skipi});
-        }
-        if(maxOf==matchorReplace){
-            //increment both outside of below statements
-            if(maxOf==dp[i][j]+m){///we have a match
-                s1out+=s1[i];//can we access strings like this? or substr
-                s2out+=s2[j];
-            }
-            else{//we have a replacement
-                s1out+=s1[i];
-                s2out+="R";
-            }
-            i++;
-            j++;
-        }
-        else if(maxOf==skipj){
-            //increment j
-            s1out+="_";
-            s2out+=s2[j];
-            j++;
-        }
-        else{
-            //increment i
-            s1out+=s1[i];
-            s2out+="_";
-            i++;
-        }
-    }*/
     reverseStr(s1out);
     reverseStr(s2out);
-    cout<<s1out<<endl;
+    cout<<s1out<<endl;//return these after debug
     cout<<s2out<<endl;
-    //cout<<s1<<endl;
-    //cout<<s2<<endl;
+    
     return 0;
 
 }
